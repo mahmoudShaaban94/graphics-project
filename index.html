@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+  <script src="js/three.js"></script>
+  <script src="js/three.min.js"></script>
+  <script src="js/OrbitControls.js"></script>
+  <script src="js/ObjectLoader.js"></script>
+  <script src="js/GLTFLoader.js"></script>
+
+
+<script>
+var scene = new THREE.Scene();
+//take 4 parameters 
+var camera = new THREE.PerspectiveCamera(55,window.innerWidth/window.innerHeight,45,30000)
+camera.position.set(-900,-200,-900);
+var renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+document.body.appendChild(renderer.domElement);
+
+/*const loader1 = new THREE.TextureLoader();
+loader1.load('models/background.jpg' , function(texture)
+            {
+             scene.background = texture;  
+            });*/
+
+
+//renderer.setClearColor( 0xe5e5e5, 1 );
+
+var hlight = new THREE.AmbientLight(0x404040,0.3);
+scene.add(hlight);
+
+var directLight = new THREE.DirectionalLight(0xffffff,100);
+directLight.position.set(0,0,0);
+directLight.castshadow =true;
+scene.add(directLight);
+
+light1 = new THREE.PointLight(0xc4c4c4,10);
+light1.position.set(0,300,500);
+scene.add(light1);
+light2 = new THREE.PointLight(0xc4c4c4,10);
+light2.position.set(500,100,0);
+scene.add(light2);
+light3 = new THREE.PointLight(0xc4c4c4,10);
+light3.position.set(0,100,-500);
+scene.add(light3);
+light4 = new THREE.PointLight(0xc4c4c4,10);
+light4.position.set(-500,300,0);
+scene.add(light4);
+
+window.addEventListener('resize', ()=>{
+renderer.setSize(window.innerWidth, window.innerHeight);
+camera.aspect = window.innerWidth / window.innerHeight;
+camera.updateProjectMatrix();
+})
+
+controls = new THREE.OrbitControls(camera, renderer.domElement);
+//controls.enableKeys = true;
+
+/*var loader = new THREE.ObjectLoader();
+loader.load (
+'modules/ball.json', function (object) {
+
+  scene.add(object); 
+},undefined,function(error){
+  console.error(error);
+}
+
+);*/
+var loader = new THREE.GLTFLoader();
+
+loader.load( 'models/scene.gltf', function ( gltf ) {
+  obj = gltf.scene.children[0];
+  obj.position.set(0,0,0);
+  obj.rotation.z = 90/180*Math.PI;
+  obj.rotation.y = 90/180*Math.PI;
+
+  obj.scale.set(2,2,2);
+  scene.add( gltf.scene );
+  var xSpeed = 0.0001;
+var ySpeed = 0.0001;
+
+document.addEventListener("keydown", onDocumentKeyDown, false);
+function onDocumentKeyDown(event) {
+    var keyCode = event.which;
+    if (keyCode == 83) {
+        obj.position.y += ySpeed;
+    } else if (keyCode == 87) {
+        obj.position.y -= ySpeed;
+    } else if (keyCode == 68) {
+        obj.position.x -= xSpeed;
+    } else if (keyCode == 65) {
+        obj.position.x += xSpeed;
+    } 
+};
+
+});
+loader.load( 'models/soldier/scene.gltf', function ( gltf ) {
+  obj = gltf.scene.children[0];
+  obj.position.set(-300,-500,-2500);
+  obj.scale.set(40,40,40);
+	scene.add( gltf.scene );
+
+});
+
+
+
+//draw geo
+var geometry = new THREE.CubeGeometry(10000,10000,10000);
+var cubeMaterials = [
+
+new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/sandcastle_ft.png'), side: THREE.DoubleSide}),
+new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/sandcastle_bk.png'), side: THREE.DoubleSide}),
+new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/sandcastle_up.png'), side: THREE.DoubleSide}),
+new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/sandcastle_dn.png'), side: THREE.DoubleSide}),
+new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/sandcastle_rt.png'), side: THREE.DoubleSide}),
+new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load('img/sandcastle_lf.png'), side: THREE.DoubleSide})
+];
+//texture
+var material = new THREE.MeshFaceMaterial(cubeMaterials);
+var cube = new THREE.Mesh(geometry , material);
+scene.add(cube);
+
+camera.position.z =3;
+
+
+//logic
+var update = function () {
+
+
+  
+
+};
+
+
+// draw scene
+var rendery = function(){
+  
+/*camera.rotation.y = 45/180*Math.PI;
+camera.position.x = 800;
+camera.position.y = 100;
+camera.position.z =1000;
+*/
+
+  renderer.render(scene, camera);
+  //renderer.setClearColor("#e5e5e5");
+
+};
+
+// run  loop (update , render , repeat)
+var loop = function (){
+
+requestAnimationFrame(loop);
+ update();
+ rendery();
+
+};
+
+loop();
+
+</script>
+
+</body>
+</html>  
